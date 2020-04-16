@@ -2,12 +2,12 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import (bytes, dict, int, list, object, range, str, ascii, chr, hex, input, next, oct, open, pow, round, super, filter, map, zip)
 
-from collection import NamedTuple
+from collections import namedtuple
 import pyodbc
 
-ConnectionInfo = NamedTuple('ConnectionInfo', ['server','database','username','password'])
+ConnectionInfo = namedtuple('ConnectionInfo', ['server','database','username','password'])
 
-def get_cursor(connection_info):
+def get_connection(connection_info):
     """
     Gets a cursor into the db
     :param connection_info: Connection paramters to use
@@ -17,6 +17,4 @@ def get_cursor(connection_info):
     database = connection_info.database #'mydb'
     username = connection_info.username #'myusername'
     password = connection_info.password #'mypassword'
-    cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
-    cursor = cnxn.cursor()
-    return cursor
+    return  pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
