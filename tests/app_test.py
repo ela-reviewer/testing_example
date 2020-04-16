@@ -36,6 +36,11 @@ def db_info():
     """
     return ConnectionInfo(r'(localdb)\.\BanerDBSharedApp1', 'secrets', 'root','root')
 
+@pytest.fixture
+def db_connection(db_info):
+    con = get_connection(db_info)
+    yield con
+    con.close()
 
 @pytest.fixture
 def db_connection(db_info):
