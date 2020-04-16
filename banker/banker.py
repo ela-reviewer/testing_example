@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
-from builtins import (bytes, dict, int, list, object, range, str, ascii, chr, hex, input, next, oct, open, pow, round, super, filter, map, zip)
+from builtins import *
 
 from banker.connection import get_connection
 
@@ -18,12 +18,12 @@ class FormatException(Exception):
         self.reason = reason
 
     @classmethod
-    def invalid_paramters():
-        return FormatException("Parameters given are not valid!")
+    def invalid_paramters(cls):
+        return cls("Parameters given are not valid!")
 
     @classmethod
-    def no_paramters():
-        return FormatException("No paramters are given!")
+    def no_parameters(cls):
+        return cls("No paramters are given!")
 
 
 def format_query(parameters):
