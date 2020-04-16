@@ -8,17 +8,11 @@ COLUMNS = [
     'first_name', 'last_name', 'bank_password'
 ]
 
-def main(connection_info, items_to_get, log_file):
-    cursor = get_connection(connection_info).cursor()
+def main(connection, items_to_get, log_file):
     query = 'SELECT {} FROM Info'.format(','.join(items_to_get))
-    cursor.execute(query)
-    results = []
-    for result in cursor.fetchall():
-        results.append(",".join(result).encode('ascii') +b'\n')
-
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        results = []
+        for result in cursor.fetchall():
+            results.append(",".join(result).encode('ascii') +b'\n')
     log_file.writelines(results)
-    print (results)
-
-
-if __name__ == '__main__':
-    main()

@@ -19,17 +19,14 @@ def formatted_values(expected_values):
     return [','.join(vals) for vals in expected_values]
 
 @pytest.fixture
-def setup_db(db_info, expected_values):
+def setup_db(db_connection, expected_values):
     """
     Sets up the database with a `secrets` table and the expected values
     """
-    con = get_connection(db_info)
-    con.execute('DELETE from Info')
-    cursor = con.cursor()
-    cursor.executemany('INSERT INTO Info (first_name, last_name, bank_password) VALUES (?,?,?)',expected_values)
-    cursor.close()
-    con.commit()
-    con.close()
+    db_connection.execute('DELETE from Info')
+    with db_connection.cursor() as cursor:
+        cursor.executemany('INSERT INTO Info (first_name, last_name, bank_password) VALUES (?,?,?)',expected_values)
+    db_connection.commit()
 
 
 @pytest.fixture
@@ -39,6 +36,11 @@ def db_info():
     """
     return ConnectionInfo(r'(localdb)\.\BanerDBSharedApp1', 'secrets', 'root','root')
 
+@pytest.fixture
+def db_connection(db_info):
+    con = get_connection(db_info)
+    yield con
+    con.close()
 
 @pytest.fixture
 def log_path():
@@ -57,13 +59,13 @@ def get_log_file(path):
         yield f
 
 
-def test_success(setup_db, log_path, db_info, formatted_values):
+def test_success(setup_db, log_path, db_connection, formatted_values):
     """
     Test the happy flow of the program
     """
     parameters = ['first_name', 'last_name', 'bank_password']
     with get_log_file(log_path) as log_file:
-        main(db_info, parameters, log_file)
+        main(db_connection, parameters, log_file)
     result = open(log_path, 'rb').readlines()
     assert len(result) == len(formatted_values)
     for line in result:
