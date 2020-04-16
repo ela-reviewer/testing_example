@@ -71,3 +71,16 @@ def test_success(setup_db, log_path, db_connection, formatted_values):
     for line in result:
         line = line.strip('\n')
         assert line in formatted_values
+
+def test_failure(setup_db, log_path, db_connection):
+    """
+    Sad flow of the program, where it fails (expectedly)
+    """
+    parameters = ['im gonna fuck up this query!']
+    try:
+        with get_log_file(log_path) as log_file:
+            main(db_connection, parameters, log_file)
+        assert False, 'Should have failed!'
+    except:
+        # Expected flow because query should have failed
+        pass
