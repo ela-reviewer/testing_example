@@ -47,13 +47,6 @@ def db_connection(db_info):
     con.close()
 
 @pytest.fixture
-def db_connection(db_info):
-    con =  get_connection(db_info)
-    yield con
-    con.close()
-
-
-@pytest.fixture
 def log_path():
     """
     Get a path to the log file
